@@ -2,6 +2,8 @@
 #-*- coding: utf-8 -*-
 """ YTB2MZN """
 
+from __future__ import unicode_literals
+
 import re
 import sys
 
@@ -67,8 +69,12 @@ class Ytb2MZN(object):
     @classmethod
     def write_metadata(cls, fname, title):
         audio = EasyID3(fname)
-        artist = title.split(' - ')[0]
-        track = title.split(' - ')[1]
+        try:
+            artist = title.split(' - ')[0]
+            track = title.split(' - ')[1]
+        except IndexError:
+            artist = title.split(' – ')[0]
+            track = title.split(' – ')[1]
         audio['artist'] = artist
         audio['title'] = track
         audio['genre'] = 'electronic'
@@ -78,9 +84,11 @@ class Ytb2MZN(object):
     def search_and_download(cls, query):
         results = cls.search(query)
         if results:
-            fname = cls.download(results[0][0], results[0][1])
+            vid = results[0][1]
+            title = '{0!s}'.format(results[0][0])
+            fname = cls.download(title, vid)
             if fname:
-                cls.write_metadata(fname, results[0][0])
+                cls.write_metadata(fname, title)
 
     @classmethod
     def run(cls):
