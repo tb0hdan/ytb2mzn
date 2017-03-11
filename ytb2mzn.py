@@ -91,10 +91,23 @@ class Ytb2MZN(object):
                 cls.write_metadata(fname, title)
 
     @classmethod
+    def search_and_return_url(cls, query):
+        url = None
+        results = cls.search(query)
+        if results:
+            vid = results[0][1]
+            url = 'http://youtu.be/{0!s}'.format(vid)
+        return url
+
+
+    @classmethod
     def run(cls):
-        if len(sys.argv) > 1:
+        if len(sys.argv) > 1 and sys.argv[1] != '-u':
             title = ' '.join(sys.argv[1:])
             cls.search_and_download(title)
+        elif len(sys.argv) > 1 and sys.argv[1] == '-u':
+            title = ' '.join(sys.argv[2:])
+            print cls.search_and_return_url(title)
 
 if __name__ == '__main__':
     Ytb2MZN.run()
