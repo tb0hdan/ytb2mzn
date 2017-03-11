@@ -4,6 +4,7 @@
 
 from __future__ import unicode_literals
 
+import os
 import re
 import sys
 
@@ -17,7 +18,8 @@ class Ytb2MZN(object):
 
     @classmethod
     def youtube(cls):
-        credentials = GoogleCredentials.from_stream('./credentials.json')
+        mydir = os.path.dirname(os.path.abspath(__file__))
+        credentials = GoogleCredentials.from_stream(os.path.join(mydir, 'credentials.json'))
         return build('youtube', 'v3', credentials=credentials)
 
     @classmethod
@@ -107,7 +109,7 @@ class Ytb2MZN(object):
             cls.search_and_download(title)
         elif len(sys.argv) > 1 and sys.argv[1] == '-u':
             title = ' '.join(sys.argv[2:])
-            print cls.search_and_return_url(title)
+            print(cls.search_and_return_url(title))
 
 if __name__ == '__main__':
     Ytb2MZN.run()
