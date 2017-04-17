@@ -68,15 +68,24 @@ class Ytb2MZN(object):
             audio_file = re.sub('\.[^\.]+$', '.mp3', cls.target_filename)
         return audio_file
 
+    @staticmethod
+    def title_to_artist_track(title, original_title):
+        artist = track = None
+        splits = [' - ', ' – ']
+        for split_pattern in splits:
+            try:
+                artist = title.split(split_pattern)[0]
+                track = title.split(split_pattern)[1]
+            except:
+                continue
+        if not (artist and track):
+            artist, track = original_title.split(' - ')[0], original_title.split(' - ')[1]
+        return artist, track
+
     @classmethod
-    def write_metadata(cls, fname, title):
+    def write_metadata(cls, fname, title, original_title):
         audio = EasyID3(fname)
-        try:
-            artist = title.split(' - ')[0]
-            track = title.split(' - ')[1]
-        except IndexError:
-            artist = title.split(' – ')[0]
-            track = title.split(' – ')[1]
+        artist, track = cls.title_to_artist_track(title, original_title)
         audio['artist'] = artist
         audio['title'] = track
         audio['genre'] = 'electronic'
@@ -90,7 +99,7 @@ class Ytb2MZN(object):
             title = '{0!s}'.format(results[0][0])
             fname = cls.download(title, vid)
             if fname:
-                cls.write_metadata(fname, title)
+                cls.write_metadata(fname, title, query)
 
     @classmethod
     def search_and_return_url(cls, query):
