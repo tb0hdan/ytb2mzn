@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: utf-8 -*-
 """ YTB2MZN """
 
@@ -60,7 +60,8 @@ class Ytb2MZN(object):
                     'quiet': not verbose, 'outtmpl': template,
                     'postprocessors': [{'preferredcodec': 'mp3', 'preferredquality': '0',
                                         'nopostoverwrites': True, 'key': 'FFmpegExtractAudio'}],
-                    'progress_hooks': [cls.download_hook]}
+                    'progress_hooks': [cls.download_hook],
+                    'nocheckcertificate': True}
 
         url = 'https://youtu.be/{0!s}'.format(video_id)
         with YoutubeDL(ydl_opts) as ydl:
