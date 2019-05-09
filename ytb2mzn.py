@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 
 import os
 import re
+import shutil
 import sys
 
 from apiclient.discovery import build  # pylint:disable=import-error
@@ -93,7 +94,8 @@ class Ytb2MZN(object):
         audio.save()
 
     @classmethod
-    def search_and_download(cls, query):
+    def search_and_download(cls, query, destination=None):
+        fname = ""
         results = cls.search(query)
         if results:
             vid = results[0][1]
@@ -101,6 +103,11 @@ class Ytb2MZN(object):
             fname = cls.download(title, vid)
             if fname:
                 cls.write_metadata(fname, title, query)
+        if fname and destination:
+            new_file = os.path.join(destination, fname.replace('/', '_'))
+            shutil.move(fname, new_file)
+            fname = new_file
+        return fname
 
     @classmethod
     def search_and_return_url(cls, query):
