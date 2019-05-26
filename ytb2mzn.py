@@ -80,9 +80,11 @@ class Ytb2MZN(object):
                 track = title.split(split_pattern)[1]
             except:
                 continue
+            else:
+                break
         if not (artist and track):
             artist, track = original_title.split(' - ')[0], original_title.split(' - ')[1]
-        return artist, track
+        return artist.strip(), track.strip()
 
     @classmethod
     def write_metadata(cls, fname, title, original_title):
